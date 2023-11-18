@@ -34,10 +34,11 @@ namespace m1
         void OnWindowResize(int width, int height) override;
 
      protected:
-        bool isDragging, moveDiamond;
+        bool isDragging, moveDiamond, changeRes;
         float index, initialCursorX, initialCursorY;
         GLenum cullFace;
         GLenum polygonMode;
+        float resolutionX, resolutionY, offsetX, offsetY;
         float starTimeCounter;
         int previous_timer, same_i, same_j;
         float angleStar, dissapearTimeCounterX, dissapearTimeCounterY;

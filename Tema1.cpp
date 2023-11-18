@@ -58,6 +58,10 @@ void Tema1::Init()
     angleStar = 0;
     starTimeCounter = 0;
     moveDiamond = false;
+    resolutionX = window->GetResolution().x;
+    resolutionY = window->GetResolution().y;
+    offsetX = 0;
+    offsetY = 0;
     Scene::Init();
 }
 
@@ -77,9 +81,10 @@ void Tema1::deacrease_life() {
     player->life--;
 }
 
-void emptyvector(glm::vector<struct Star> stars) {
-    for (int i = 0; i < stars.size(); i++) {
-        stars.pop_back();
+void emptyvector(glm::vector<struct Star> *stars) {
+    for (int i = 0; i < stars->size(); i++) {
+        cout<<"sterge steaua cu nr: "<<i<<endl;
+        stars->pop_back();
     }
 }
 
@@ -93,13 +98,14 @@ void Tema1::dissapear_shooter(float deltaTimeSeconds) {
                 shootersOnBoard[i][j].modelMatrix *= Transform2D::Scale(0.9f, 0.9f);
                 RenderMesh2D(shootersOnBoard[i][j].mesh, shaders["VertexColor"], shootersOnBoard[i][j].modelMatrix);
                 if (shootersOnBoard[i][j].length <= 0 || shootersOnBoard[i][j].width <= 0) {
+                    cout<<"incepe sa stearga"<<endl;
                     shootersOnBoard[i][j].isDissapearing = false;
                     shootersOnBoard[i][j].position.x = 0;
                     shootersOnBoard[i][j].position.y = 0;
                     shootersOnBoard[i][j].length = squareSide / 2 - diamondDistanceH;
                     shootersOnBoard[i][j].width =squareSide - diamondDistanceW - smallRectangleDistance;
                     shootersOnBoard[i][j].startshooting = false;
-                    emptyvector(shootersOnBoard[i][j].ammunition);
+                   // emptyvector(&shootersOnBoard[i][j].ammunition);
                 }
             }
         }
@@ -153,23 +159,26 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
                         shootersOnBoard[i][j].ammunition.push_back(star);
                         starTimeCounter = 1.5;
                     }
+                    cout<<"a adaugat "<<shootersOnBoard[i][j].ammunition.size()<<" stele"<<endl;
                 }
                 // MOVE AMMUNITION -------------------------------------------------------- 
                 for (int k = 0; k < shootersOnBoard[i][j].ammunition.size(); k++) {
+                    cout<<"misca steaua nr: "<<k<<endl;
                     modelMatrix = glm::mat3(1);
                     shootersOnBoard[i][j].ammunition[k].position.x += 2;
-                    int cx = shootersOnBoard[i][j].ammunition[k].position.x + squareSide / 2 * 0.3;
-                    int cy = shootersOnBoard[i][j].ammunition[k].position.y + squareSide / 2 * 0.3;
+                    int cx = shootersOnBoard[i][j].ammunition[k].position.x + squareSide / 2 * 0.4;
+                    int cy = shootersOnBoard[i][j].ammunition[k].position.y + squareSide / 2 * 0.4;
                     modelMatrix *= Transform2D::Translate(cx, cy);
                     modelMatrix *= Transform2D::Rotate(angleStar);
                     modelMatrix *= Transform2D::Translate(-cx, -cy);
                     modelMatrix *= Transform2D::Translate(shootersOnBoard[i][j].ammunition[k].position.x, shootersOnBoard[i][j].ammunition[k].position.y);
-                    modelMatrix *= Transform2D::Scale(0.3, 0.3);
+                    modelMatrix *= Transform2D::Scale(0.4, 0.4);
                     RenderMesh2D(shootersOnBoard[i][j].starMesh, shaders["VertexColor"], modelMatrix);
                     // COLLISION -------------------------------------------------------------------------------------------------------------------------
                     for (int m = 0; m < enemiesOnBoard[i].size(); m++) {
                         if (enemiesOnBoard[i][m].color == shootersOnBoard[i][j].ammunition[k].color
-                            && shootersOnBoard[i][j].ammunition[k].position.x + shootersOnBoard[i][j].ammunition[k].radius * 0.3 >= enemiesOnBoard[i][m].position.x) {
+                            && shootersOnBoard[i][j].ammunition[k].position.x + shootersOnBoard[i][j].ammunition[k].radius * 0.4 >= enemiesOnBoard[i][m].position.x) {
+                            cout<<"a sters steaua nr: "<<k<<"in total sunt: "<<shootersOnBoard[i][j].ammunition.size()<<endl;
                             shootersOnBoard[i][j].ammunition.erase(shootersOnBoard[i][j].ammunition.begin() + k, shootersOnBoard[i][j].ammunition.begin() + k + 1);
                             enemiesOnBoard[i][m].life--;
                             if (enemiesOnBoard[i][m].life <= 0) {
@@ -214,7 +223,7 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
                 if (enemiesOnBoard[i][j].position.x < - squareSide) {
                     deacrease_life();
                     enemiesOnBoard[i][j].position.x = window->GetResolution().x;
-                    enemiesOnBoard[i].erase(enemiesOnBoard[i].begin() + j);
+                    enemiesOnBoard[i].erase(enemiesOnBoard[i].begin() + j, enemiesOnBoard[i].begin() + j + 1);
                 }
             }
         }
@@ -225,17 +234,29 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
 void Tema1::Update(float deltaTimeSeconds)
 { 
     Scene::Update(deltaTimeSeconds);
+    //cout<<"Size fereastra: "<<window->GetResolution().x<< " "<<window->GetResolution().y<<endl;
+    // if (window->GetResolution().x != resolutionX) {
+    //     offsetX = abs(window->GetResolution().x - resolutionX) / 4;
+    //     offsetY = abs(window->GetResolution().y - resolutionY) / 4;
+    //     resolutionX = window->GetResolution().x;
+    //     resolutionY = window->GetResolution().y;
+    // }
     freeze -= deltaTimeSeconds;
     starTimeCounter -= deltaTimeSeconds;
     angleStar -= deltaTimeSeconds * 3;
     if (freeze < 0) {
         int i = rand() % 3;
-            if (enemiesOnBoard[i].size() <= 1) {
+           // if (enemiesOnBoard[i].size() <= 2) {
                 index_i = i;
                 index_j = rand() % 4;
                 enemiesOnBoard[index_i].push_back(background->enemies[index_i][index_j]);
-            }
-        freeze = rand() % 8 + 5;
+            //}
+        //hard
+        freeze = rand() % 4 + 3;
+        //medium
+        freeze = rand() % 6 + 3;
+        //easy
+        freeze = rand() % 8 + 3;
     }
 
     RenderScene(deltaTimeSeconds);
@@ -276,13 +297,14 @@ void Tema1::OnKeyRelease(int key, int mods)
 
 void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 {
-    //cout<<mouseX<<" "<<mouseY<<endl;
 }
 
 
 void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 {
-    mouseY = window->GetResolution().y - mouseY;
+    if (offsetY == 0) {
+        mouseY = window->GetResolution().y - mouseY; 
+    }
     if (IS_BIT_SET(button, GLFW_MOUSE_BUTTON_LEFT)) {
         for (int i = 0; i < 3; i++) {
             float posX = background->bonus[i].position.x;
@@ -331,7 +353,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 
 void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 {
-    mouseY = window->GetResolution().y - mouseY;
+    mouseY = window->GetResolution().y - mouseY; 
     if (IS_BIT_SET(button, GLFW_MOUSE_BUTTON_RIGHT)) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -370,4 +392,5 @@ void Tema1::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 
 void Tema1::OnWindowResize(int width, int height)
 {
+
 }

@@ -22,6 +22,7 @@ void Scene::Init()
     background->grid = new Grid();
     glm::vec3 corner = glm::vec3(0, 0, 0);
     squareSide = 150;
+    //cout<<"Size fereastra: "<<window->GetResolution().x<< " "<<window->GetResolution().y<<endl;
     squaresDistance = 54;
     rectangleWidth = squareSide / 2;
     rectangleHeight = 3 * squareSide + 2 * squaresDistance;
