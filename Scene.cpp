@@ -174,6 +174,14 @@ void Scene::Init()
 
     Mesh *end = objects2D::CreateEND("end", corner, squareSide, glm::vec3(1, 0, 0), true);
     AddMeshToList(end);
+
+    Mesh *button1 = objects2D::CreateSquare("button1", corner, squareSide, glm::vec3(  0.1f, 0.05f, 0.15f), true);
+    AddMeshToList(button1);
+    Mesh *button2 = objects2D::CreateSquare("button2", corner, squareSide, glm::vec3( 0.1f, 0.1f, 0.5f), true);
+    AddMeshToList(button2);
+    Mesh *button3 = objects2D::CreateSquare("button3", corner, squareSide, glm::vec3( 0.2f, 0.06f, 0.1f), true);
+    AddMeshToList(button3);
+    Mesh * rectangle2 = objects2D::CreateRectangle("rectangle2", corner, squareSide * 0.4, 4 * squareSide * 0.4 + squareSide * 0.2, (- squareSide * 0.4), glm::vec3(0.5f, 0.5f, 0.5f), true);
 }
 
 
@@ -385,10 +393,32 @@ void Scene::Update(float deltaTimeSeconds)
         }
 
         if (delay_stars <= 0) {
-            delay_stars = 7;
+            delay_stars = 5;
             for (int i = 0; i < 3; i++) {
                 background->bonus[i].collected = false;
             }
         }
     }
+    //BUTTONS ----------------------------------------------------------------
+    translateY = ry / 2;
+    float distance = 0.4 * squareSide / 2;
+
+    modelMatrix = glm::mat3(1);
+    translateX = window->GetResolution().x - squareSide * 0.4;
+    modelMatrix *= Transform2D::Translate(translateX, translateY);
+    modelMatrix *= Transform2D::Scale(0.4, 0.4);
+    RenderMesh2D(meshes["button3"], shaders["VertexColor"], modelMatrix);
+
+    modelMatrix = glm::mat3(1);
+    translateX = window->GetResolution().x - 2 * squareSide * 0.4 - distance;
+    modelMatrix *= Transform2D::Translate(translateX, translateY);
+    modelMatrix *= Transform2D::Scale(0.4, 0.4);
+    RenderMesh2D(meshes["button2"], shaders["VertexColor"], modelMatrix);
+
+    modelMatrix = glm::mat3(1);
+    translateX = window->GetResolution().x - 3 * squareSide * 0.4 - 2 * distance;
+    modelMatrix *= Transform2D::Translate(translateX, translateY);
+    modelMatrix *= Transform2D::Scale(0.4, 0.4);
+    RenderMesh2D(meshes["button1"], shaders["VertexColor"], modelMatrix);
+
 }

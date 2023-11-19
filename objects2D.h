@@ -56,7 +56,6 @@ struct Diamond {
     float width;
     Mesh *starMesh;
     glm::vector<struct Star> ammunition;
-    //de vazut ce mai adaug
 };
 
 struct Hexagon {

@@ -52,33 +52,34 @@ void Tema1::Init()
         }
     }
 
-    translateXEnemeys = window->GetResolution().x;
     isDragging = false;
-    freeze = 5;
-    levelUp = 0;
-    // red = 0.1f;
-    // green = 0.05f;
-    // blue = 0.2f;
+    freeze = 3;
     red = 0.1f;
     green = 0.05f;
     blue = 0.15f;
-    cnt = 0;
     angleStar = 0;
-    moveDiamond = false;
+    easy = true;
+    medium = false;
+    hard = false;
     Scene::Init();
 }
 
 
 void Tema1::FrameStart()
-{
-    // Clears the color buffer (using the previously set color) and depth buffer
-    //glClearColor(0.9f, 0.8f, 0.6f, 1.0f);
-    //glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-    //glClearColor(0, 0, 0, 1.0f);
-    //glClearColor(0.1f, 0.05f, 0.15f, 1.0f); 
-    //glClearColor(0.1f, 0.05f, 0.2f, 1.0f);  // Mov mai închis pentru nivel ușor    
-    //glClearColor(0.05f, 0.1f, 0.15f, 1.0f);  // Albastru închis pentru nivel mediu
-    //glClearColor(0.15f, 0.05f, 0.1f, 1.0f);  // Roșu închis pentru nivel dificil
+{   
+    if (easy) {
+        red = 0.1f;
+        green = 0.05f;
+        blue = 0.15f;
+    } else if (medium) {
+        red = 0.1f;
+        green = 0.1f;
+        blue = 0.5f;
+    } else if (hard) {
+        red = 0.2f;
+        green = 0.06f;
+        blue = 0.1f;
+    }
     glClearColor(red, green, blue, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -104,7 +105,6 @@ void Tema1::dissapear_shooter(float deltaTimeSeconds) {
                 shootersOnBoard[i][j].modelMatrix *= Transform2D::Scale(0.9f, 0.9f);
                 RenderMesh2D(shootersOnBoard[i][j].mesh, shaders["VertexColor"], shootersOnBoard[i][j].modelMatrix);
                 if (shootersOnBoard[i][j].length <= 0 || shootersOnBoard[i][j].width <= 0) {
-                    //cout<<"incepe sa stearga shooterul"<<endl;
                     shootersOnBoard[i][j].isDissapearing = false;
                     shootersOnBoard[i][j].position.x = 0;
                     shootersOnBoard[i][j].position.y = 0;
@@ -114,7 +114,6 @@ void Tema1::dissapear_shooter(float deltaTimeSeconds) {
                     shootersOnBoard[i][j].starTimer = 0;
                     for (int i = 0; i < shootersOnBoard[i][j].ammunition.size(); i++) {
                         if (!shootersOnBoard[i][j].ammunition[i].isGoingForward) {
-                            //cout<<"sterge steaua cu nr in dissapearing: "<<i<<endl;
                             shootersOnBoard[i][j].ammunition.erase(shootersOnBoard[i][j].ammunition.begin() + i, shootersOnBoard[i][j].ammunition.begin() + i + 1);
                         }
                     }
@@ -128,14 +127,12 @@ void Tema1::dissapear_enemy(float deltaTimeSeconds) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < enemiesOnBoard[i].size(); j++) {
             if (enemiesOnBoard[i][j].life <= 0) {
-                //cout<<"incepe sa stearga inamicul"<<endl;
                 enemiesOnBoard[i][j].length -= enemiesOnBoard[i][j].length * 0.9;
                 enemiesOnBoard[i][j].width -= enemiesOnBoard[i][j].width * 0.9;
                 enemiesOnBoard[i][j].modelMatrix *= Transform2D::Translate(deltaTimeSeconds * 850, deltaTimeSeconds * 850);
                 enemiesOnBoard[i][j].modelMatrix *= Transform2D::Scale(0.9f, 0.9f);
                 RenderMesh2D(enemiesOnBoard[i][j].mesh, shaders["VertexColor"], enemiesOnBoard[i][j].modelMatrix);
                 if (enemiesOnBoard[i][j].length <= 0 || enemiesOnBoard[i][j].width <= 0) {
-                    //cout<<"a sters inamicul"<<endl;
                     enemiesOnBoard[i].erase(enemiesOnBoard[i].begin() + j);
                 }
             }
@@ -160,14 +157,12 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             if (shootersOnBoard[i][j].position.x != 0 && !shootersOnBoard[i][j].isDissapearing) {
-                //cout<<"deseneaza shooterul"<<endl;
                 shootersOnBoard[i][j].modelMatrix = glm::mat3(1);
                 shootersOnBoard[i][j].modelMatrix *= Transform2D::Translate(shootersOnBoard[i][j].position.x, shootersOnBoard[i][j].position.y);
                 RenderMesh2D(shootersOnBoard[i][j].mesh, shaders["VertexColor"], shootersOnBoard[i][j].modelMatrix);
                 // LOAD AMMUNITION -------------------------------------------------------- 
                 if (shootersOnBoard[i][j].startshooting) {
                     shootersOnBoard[i][j].starTimer -= deltaTimeSeconds;
-                    //cout<<"timer: "<<shootersOnBoard[i][j].starTimer<<endl;
                     if (shootersOnBoard[i][j].starTimer < 0) {
                         struct Star star;
                         star.position.x = shootersOnBoard[i][j].positionXStar;
@@ -177,12 +172,10 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
                         shootersOnBoard[i][j].ammunition.push_back(star);
                         shootersOnBoard[i][j].starTimer = 1.2;
                     }
-                    //cout<<"sunt in total "<<shootersOnBoard[i][j].ammunition.size()<<" stele"<<endl;
                 }
             }
             // MOVE AMMUNITION -------------------------------------------------------- 
             for (int k = shootersOnBoard[i][j].ammunition.size() - 1; k >= 0; k--) {
-                //cout<<"misca steaua nr: "<<k<<endl;
                 modelMatrix = glm::mat3(1);
                 shootersOnBoard[i][j].ammunition[k].isGoingForward = true;
                 shootersOnBoard[i][j].ammunition[k].position.x += 2;
@@ -199,18 +192,15 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
                     if (enemiesOnBoard[i][m].color == shootersOnBoard[i][j].ammunition[k].color
                         && shootersOnBoard[i][j].ammunition.size() != 0 // daca e 0 mai trebuie sa faca load
                         && shootersOnBoard[i][j].ammunition[k].position.x + shootersOnBoard[i][j].ammunition[k].radius * 0.4 >= enemiesOnBoard[i][m].position.x) {
-                       // cout<<"a sters steaua nr: "<<k<<"in total sunt: "<<shootersOnBoard[i][j].ammunition.size()<<endl;
                         shootersOnBoard[i][j].ammunition.erase(shootersOnBoard[i][j].ammunition.begin() + k, shootersOnBoard[i][j].ammunition.begin() + k + 1);
                         enemiesOnBoard[i][m].life--;
                         if (enemiesOnBoard[i][m].life <= 0) {
-                            //cout<<"a omorat inamicul nu nr: "<<m<<endl;
                             shootersOnBoard[i][j].startshooting = false;
                             enemiesOnBoard[i][m].life = 0;
                         }
                     }
                 }
                 if (shootersOnBoard[i][j].ammunition[k].position.x > window->GetResolution().x) {
-                    //cout<<"a sters steaua nr: "<<k<<"in total sunt: "<<shootersOnBoard[i][j].ammunition.size()<<endl;
                     shootersOnBoard[i][j].ammunition.erase(shootersOnBoard[i][j].ammunition.begin() + k, shootersOnBoard[i][j].ammunition.begin() + k + 1);
                 }
             }
@@ -230,15 +220,12 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
                             float distance = shootersOnBoard[i][k].position.x + squareSide;
                             if (enemiesOnBoard[i][j].position.x + squareSide / 4 < distance - smallRectangleDistance 
                                 && enemiesOnBoard[i][j].position.x + squareSide / 4 > shootersOnBoard[i][k].position.x + squareSide / 2) {
-                                //cout<<"a murit shooterul"<<endl;
                                 shootersOnBoard[i][k].isDissapearing = true;
                             } else {
                                 if (shootersOnBoard[i][k].color == enemiesOnBoard[i][j].color) {
-                                    //cout<<"incepe sa traga shooterul: "<<k<<endl;
                                     shootersOnBoard[i][k].startshooting = true;
                                 }
                                 if (shootersOnBoard[i][k].position.x + squareSide > enemiesOnBoard[i][j].position.x) {
-                                    //cout<<"s-a oprit din tras shooterul: "<<k<<endl;
                                     shootersOnBoard[i][k].startshooting = false;
                                 }
                             }
@@ -246,7 +233,6 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
                     }
                 }
                 if (enemiesOnBoard[i][j].position.x < - squareSide) {
-                    //cout<<"a disparut inamicul: "<<j<<endl;
                     deacrease_life();
                     enemiesOnBoard[i][j].position.x = window->GetResolution().x;
                     enemiesOnBoard[i].erase(enemiesOnBoard[i].begin() + j, enemiesOnBoard[i].begin() + j + 1);
@@ -264,31 +250,17 @@ void Tema1::Update(float deltaTimeSeconds)
         freeze -= deltaTimeSeconds;
         angleStar -= deltaTimeSeconds * 3;
         levelUp += deltaTimeSeconds;
-        if (freeze < 0) {
+        if (freeze < 0) { // in primele cateva secunde nu se poate alege modul de joc
             int i = rand() % 3;
             index_i = i;
             index_j = rand() % 4;
             enemiesOnBoard[index_i].push_back(background->enemies[index_i][index_j]);
-            if (levelUp <= 60) {
-                //easy
+            if (easy) { 
                 freeze = rand() % 7 + 3;
-            } else if (levelUp <= 150) {
-                cout<<"medium"<<endl;
-                //medium
-                freeze = rand() % 3 + 2;
-                // red = 0.05f;
-                // green = 0.1f;
-                // blue = 0.15f;
-                red = 0.1f;
-                green = 0.05f;
-                blue = 0.2f;
-            } else {
-                cout<<"hard"<<endl;
-                //hard
+            } else if (medium) { 
+                freeze = rand() % 4 + 1;
+            } else if (hard) {
                 freeze = rand() % 2 + 1;
-                red = 0.15f;
-                green = 0.05f;
-                blue = 0.1f;
             }
         }
 
@@ -298,40 +270,6 @@ void Tema1::Update(float deltaTimeSeconds)
     }
 }
 
-
-void Tema1::FrameEnd()
-{
-}
-
-
-/*
- *  These are callback functions. To find more about callbacks and
- *  how they behave, see `input_controller.h`.
- */
-
-
-void Tema1::OnInputUpdate(float deltaTime, int mods)
-{
-
-}
-
-
-void Tema1::OnKeyPress(int key, int mods)
-{
-    // Add key press event
-    
-}
-
-
-void Tema1::OnKeyRelease(int key, int mods)
-{
-    // Add key release event
-}
-
-
-void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
-{
-}
 
 
 void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
@@ -348,9 +286,29 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                     background->bonus[i].collected = true;
                     background->bonus[i].position.x = 0;
                     background->bonus[i].position.y = 0;
-                    if (player->score < 8) {
+                    if (player->score < 9) {
                         player->score++;
                     }
+                }
+            }
+            float translate =  window->GetResolution().x - squareSide * 0.4;
+            float distance = 0.4 * squareSide / 2;
+            float length = 0.4 * squareSide;
+            if (mouseY >  ry / 2 && mouseY < ry / 2 + length) {
+                if (mouseX > translate && mouseX < translate + length && !hard) {
+                        hard = true;
+                        easy = false;
+                        medium = false;
+                } else if (mouseX >  translate - length - distance 
+                        && mouseX < translate - distance && !medium) {
+                        medium = true;
+                        easy = false;
+                        hard = false;
+                } else if (mouseX > translate - 3 * length - 2 * distance
+                        && mouseX < translate - length - 2 * distance && !easy) {
+                        easy = true;
+                        medium = false;
+                        hard = false;
                 }
             }
         }
