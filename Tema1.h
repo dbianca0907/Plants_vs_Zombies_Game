@@ -38,13 +38,13 @@ namespace m1
         float index, initialCursorX, initialCursorY;
         GLenum cullFace;
         GLenum polygonMode;
-        float resolutionX, resolutionY, offsetX, offsetY;
-        float starTimeCounter;
+        //float resolutionX, resolutionY, offsetX, offsetY;
+        float levelUp;
+        float currentLevel, red, green, blue;
         int previous_timer, same_i, same_j;
         float angleStar, dissapearTimeCounterX, dissapearTimeCounterY;
         std::map<int, std::vector<struct Hexagon>> enemiesOnBoard;
-       // std::map<int, std::vector<struct Diamond>> shootersOnBoard;
-         struct Diamond shootersOnBoard[3][3];
+        struct Diamond shootersOnBoard[3][3];
         int cnt;
         float freeze, translate_star;
         int index_i, index_j;

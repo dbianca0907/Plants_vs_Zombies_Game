@@ -28,5 +28,6 @@ namespace m1
         float translateXEnemeys;
         float scaleX, scaleY;
         float angularStep;
+        bool endGame;
     };
 }

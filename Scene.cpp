@@ -22,7 +22,7 @@ void Scene::Init()
     background->grid = new Grid();
     glm::vec3 corner = glm::vec3(0, 0, 0);
     squareSide = 150;
-    //cout<<"Size fereastra: "<<window->GetResolution().x<< " "<<window->GetResolution().y<<endl;
+    endGame = false;
     squaresDistance = 54;
     rectangleWidth = squareSide / 2;
     rectangleHeight = 3 * squareSide + 2 * squaresDistance;
@@ -52,26 +52,26 @@ void Scene::Init()
     // Initialize angularStep
     angularStep = 0;
 
-    Mesh* square1 = objects2D::CreateSquare("square1", corner, squareSide, glm::vec3(0, 1, 0), true);
+    Mesh* square1 = objects2D::CreateSquare("square1", corner, squareSide, glm::vec3(0.5f, 0.3f, 0.7f), true); // 0 1 0
     AddMeshToList(square1);
 
-    Mesh* life = objects2D::CreateSquare("life", corner, squareSide, glm::vec3(1, 0, 0), true);
+    Mesh* life = objects2D::CreateSquare("life", corner, squareSide, glm::vec3(1.0f, 0.5f, 0.2f), true);
     AddMeshToList(life);
 
-    Mesh* mainRectangle = objects2D::CreateRectangle("main_rectangle", corner, rectangleWidth, squareSide, squaresDistance, glm::vec3(1, 0, 0), true);
+    Mesh* mainRectangle = objects2D::CreateRectangle("main_rectangle", corner, rectangleWidth, squareSide, squaresDistance, glm::vec3( 0.7f, 0.3f, 0.5f), true);
     AddMeshToList(mainRectangle);
 
     for (int i = 0; i < 4; i++) {
         struct Diamond diamond;
         background->diamonds[i] = diamond;
     }
-    background->diamonds[0].color = glm::vec3(1, 0.7, 0);
+    background->diamonds[0].color = glm::vec3(0.5f, 1.0f, 0.5f);
     background->diamonds[0].scoreDamage = 1;
-    background->diamonds[1].color = glm::vec3(0, 0, 1);
+    background->diamonds[1].color = glm::vec3(0.0f, 1.0f, 1.0f); // 0 0 1
     background->diamonds[1].scoreDamage = 2;
-    background->diamonds[2].color = glm::vec3(1, 1, 0);
+    background->diamonds[2].color = glm::vec3(1.0f, 0.9f, 0.5f); // 1 1 0
     background->diamonds[2].scoreDamage = 2;
-    background->diamonds[3].color = glm::vec3(1, 0, 1);
+    background->diamonds[3].color = glm::vec3(0.9f, 0.7f, 0.9f);
     background->diamonds[3].scoreDamage = 3;
 
 
@@ -87,16 +87,16 @@ void Scene::Init()
     background->diamonds[3].mesh = objects2D::CreateDiamond("diamond3", corner, squareSide, diamondDistanceH, diamondDistanceW, smallRectangleWidth, smallRectangleDistance, background->diamonds[3].color, true);
     AddMeshToList(background->diamonds[3].mesh);
 
-    Mesh *hex1 = objects2D::CreateHexagon("hexagon1", corner, squareSide, diamondDistanceH, glm::vec3(1, 0.7, 0), true);
+    Mesh *hex1 = objects2D::CreateHexagon("hexagon1", corner, squareSide, diamondDistanceH, glm::vec3(0.5f, 1.0f, 0.5f), true);
     AddMeshToList(hex1);
 
-    Mesh *hex2 = objects2D::CreateHexagon("hexagon2", corner, squareSide, diamondDistanceH, glm::vec3(0, 0, 1), true);
+    Mesh *hex2 = objects2D::CreateHexagon("hexagon2", corner, squareSide, diamondDistanceH, glm::vec3(0.0f, 1.0f, 1.0f), true);
     AddMeshToList(hex2);
 
-    Mesh *hex3 = objects2D::CreateHexagon("hexagon3", corner, squareSide, diamondDistanceH, glm::vec3(1, 1, 0), true);
+    Mesh *hex3 = objects2D::CreateHexagon("hexagon3", corner, squareSide, diamondDistanceH, glm::vec3(1.0f, 0.9f, 0.5f), true);
     AddMeshToList(hex3);
 
-    Mesh *hex4 = objects2D::CreateHexagon("hexagon3", corner, squareSide, diamondDistanceH, glm::vec3(1, 0, 1), true);
+    Mesh *hex4 = objects2D::CreateHexagon("hexagon3", corner, squareSide, diamondDistanceH, glm::vec3(0.9f, 0.7f, 0.9f), true);
     AddMeshToList(hex4);
 
     for (int i = 0; i < 3; i++) {
@@ -138,7 +138,7 @@ void Scene::Init()
         }
     }
 
-    Mesh* star = objects2D::CreateStar("star", corner, squareSide, glm::vec3(0.5, 0.5, 0.5), true);
+    Mesh* star = objects2D::CreateStar("star", corner, squareSide, glm::vec3(1.0f, 0.7f, 0.4f), true);
     AddMeshToList(star);
 
     background->diamonds[0].starMesh = objects2D::CreateStar("star0", corner, squareSide,  background->diamonds[0].color, true);
@@ -153,7 +153,7 @@ void Scene::Init()
     background->diamonds[3].starMesh = objects2D::CreateStar("star3", corner, squareSide,  background->diamonds[3].color, true);
     AddMeshToList(background->diamonds[3].starMesh);
 
-    Mesh* bonus = objects2D::CreateStar("bonus", corner, squareSide, glm::vec3(0.5, 0.5, 1), true);
+    Mesh* bonus = objects2D::CreateStar("bonus", corner, squareSide, glm::vec3(1.0f, 0.84f, 0.0f), true);
     AddMeshToList(bonus);
 
     for (int i = 0; i < 3; i++) {
@@ -171,12 +171,23 @@ void Scene::Init()
 
     Mesh* box = objects2D::CreateSquare("box", corner, squareSide, glm::vec3(1, 1, 1), false);
     AddMeshToList(box);
+
+    Mesh *end = objects2D::CreateEND("end", corner, squareSide, glm::vec3(1, 0, 0), true);
+    AddMeshToList(end);
 }
 
 
 
 void Scene::Update(float deltaTimeSeconds)
 {   
+
+    // end
+    if (endGame) {
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= Transform2D::Translate(window->GetResolution().x / 2 - 3 * squareSide, window->GetResolution().y / 2 - squareSide);
+        modelMatrix *= Transform2D::Scale(2, 2);
+        RenderMesh2D(meshes["end"], shaders["VertexColor"], modelMatrix);
+    }
     float aux;
     // GRID ------------------------------------------------------------
     // rectangle
@@ -354,28 +365,30 @@ void Scene::Update(float deltaTimeSeconds)
     }
 
     //BONUS -----------------------------------------------------------
-    delay_stars -= deltaTimeSeconds * 0.8;
-  
-    for (int i = 0; i < 3; i++) {
-        if (!background->bonus[i].collected) {
-            if (background->bonus[i].position.x == 0
-                && background->bonus[i].position.y == 0) {
-                int aux = window->GetResolution().x - 3 * squareSide;
-                translateX = rand() % aux;
-                translateY = rand() % window->GetResolution().y;
-                background->bonus[i].position = glm::vec3(translateX, translateY, 0);
-            }
-                modelMatrix = glm::mat3(1);
-                modelMatrix *= Transform2D::Translate( background->bonus[i].position.x,  background->bonus[i].position.y);
-                modelMatrix *= Transform2D::Scale(0.3, 0.3);
-                RenderMesh2D(background->bonus[i].mesh, shaders["VertexColor"], modelMatrix);
-        }
-    }
-
-    if (delay_stars <= 0) {
-        delay_stars = 10;
+    if (!endGame) {
+        delay_stars -= deltaTimeSeconds * 0.8;
+    
         for (int i = 0; i < 3; i++) {
-            background->bonus[i].collected = false;
+            if (!background->bonus[i].collected) {
+                if (background->bonus[i].position.x == 0
+                    && background->bonus[i].position.y == 0) {
+                    int aux = window->GetResolution().x - 3 * squareSide;
+                    translateX = rand() % aux;
+                    translateY = rand() % window->GetResolution().y;
+                    background->bonus[i].position = glm::vec3(translateX, translateY, 0);
+                }
+                    modelMatrix = glm::mat3(1);
+                    modelMatrix *= Transform2D::Translate( background->bonus[i].position.x,  background->bonus[i].position.y);
+                    modelMatrix *= Transform2D::Scale(0.3, 0.3);
+                    RenderMesh2D(background->bonus[i].mesh, shaders["VertexColor"], modelMatrix);
+            }
+        }
+
+        if (delay_stars <= 0) {
+            delay_stars = 7;
+            for (int i = 0; i < 3; i++) {
+                background->bonus[i].collected = false;
+            }
         }
     }
 }

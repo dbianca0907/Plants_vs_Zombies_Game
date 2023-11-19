@@ -16,6 +16,8 @@ namespace objects2D
     float smallRectangleDistance, glm::vec3 color, bool fill = false);
     Mesh* CreateHexagon(const std::string &name, glm::vec3 leftBottomCorner, float length, float distanceHeight, glm::vec3 color, bool fill = false);
     Mesh* CreateStar(const std::string &name, glm::vec3 leftBottomCorner, float length, glm::vec3 color, bool fill = false);
+    Mesh* CreateEND(const std::string &name, glm::vec3 leftBottomCorner, float length, glm::vec3 color, bool fill = false);
+
 
 struct Rectangle {
     Mesh *mesh;
@@ -36,7 +38,7 @@ struct Star {
     Mesh *mesh;
     glm::vec3 color;
     glm::vec3 position;
-    bool collected;
+    bool collected, isGoingForward;
     float radius;
 };
 
@@ -48,6 +50,7 @@ struct Diamond {
     int scoreDamage;
     int positionXStar;
     int positionYStar;
+    float starTimer;
     bool startshooting, isDissapearing;
     float length;
     float width;
