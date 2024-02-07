@@ -1,4 +1,4 @@
-#include "Tema1.h"
+#include "Player.h"
 
 #include <vector>
 #include <iostream>
@@ -19,17 +19,17 @@ using namespace m1;
 
 
 
-Tema1::Tema1()
+Player::Player()
 {
 }
 
 
-Tema1::~Tema1()
+Player::~Player()
 {
 }
 
 
-void Tema1::Init()
+void Player::Init()
 {
     glm::ivec2 resolution = window->GetResolution();
     auto camera = GetSceneCamera();
@@ -65,7 +65,7 @@ void Tema1::Init()
 }
 
 
-void Tema1::FrameStart()
+void Player::FrameStart()
 {   
     if (easy) {
         red = 0.1f;
@@ -88,14 +88,14 @@ void Tema1::FrameStart()
     glViewport(0, 0, resolution.x, resolution.y);
 }
 
-void Tema1::deacrease_life() {
+void Player::deacrease_life() {
     player->life--;
     if (player->life == 0) {
         endGame = true;
     }
 }
 
-void Tema1::dissapear_shooter(float deltaTimeSeconds) {
+void Player::dissapear_shooter(float deltaTimeSeconds) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             if (shootersOnBoard[i][j].isDissapearing && shootersOnBoard[i][j].position.x != 0) {
@@ -123,7 +123,7 @@ void Tema1::dissapear_shooter(float deltaTimeSeconds) {
     }  
 }
 
-void Tema1::dissapear_enemy(float deltaTimeSeconds) {
+void Player::dissapear_enemy(float deltaTimeSeconds) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < enemiesOnBoard[i].size(); j++) {
             if (enemiesOnBoard[i][j].life <= 0) {
@@ -141,7 +141,7 @@ void Tema1::dissapear_enemy(float deltaTimeSeconds) {
     
 }
 
-void Tema1::RenderScene(float deltaTimeSeconds) {
+void Player::RenderScene(float deltaTimeSeconds) {
 
     // MOVE SHOOTER, DRAG AND DROP---------------------------------------------
     float coordX = window->GetCursorPosition().x;
@@ -243,14 +243,14 @@ void Tema1::RenderScene(float deltaTimeSeconds) {
 }
 
 
-void Tema1::Update(float deltaTimeSeconds)
+void Player::Update(float deltaTimeSeconds)
 { 
     Scene::Update(deltaTimeSeconds);
     if (!endGame) {
         freeze -= deltaTimeSeconds;
         angleStar -= deltaTimeSeconds * 3;
         levelUp += deltaTimeSeconds;
-        if (freeze < 0) { // in primele cateva secunde nu se poate alege modul de joc
+        if (freeze < 0) {
             int i = rand() % 3;
             index_i = i;
             index_j = rand() % 4;
@@ -272,7 +272,7 @@ void Tema1::Update(float deltaTimeSeconds)
 
 
 
-void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
+void Player::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 {
     if (!endGame) {
         mouseY = window->GetResolution().y - mouseY; 
@@ -345,7 +345,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 }
 
 
-void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
+void Player::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 {
     mouseY = window->GetResolution().y - mouseY; 
     if (IS_BIT_SET(button, GLFW_MOUSE_BUTTON_RIGHT)) {
@@ -379,12 +379,12 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 }
 
 
-void Tema1::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
+void Player::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 {
 }
 
 
-void Tema1::OnWindowResize(int width, int height)
+void Player::OnWindowResize(int width, int height)
 {
 
 }

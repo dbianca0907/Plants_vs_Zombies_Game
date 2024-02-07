@@ -67,9 +67,9 @@ void Scene::Init()
     }
     background->diamonds[0].color = glm::vec3(0.5f, 1.0f, 0.5f);
     background->diamonds[0].scoreDamage = 1;
-    background->diamonds[1].color = glm::vec3(0.0f, 1.0f, 1.0f); // 0 0 1
+    background->diamonds[1].color = glm::vec3(0.0f, 1.0f, 1.0f);
     background->diamonds[1].scoreDamage = 2;
-    background->diamonds[2].color = glm::vec3(1.0f, 0.9f, 0.5f); // 1 1 0
+    background->diamonds[2].color = glm::vec3(1.0f, 0.9f, 0.5f);
     background->diamonds[2].scoreDamage = 2;
     background->diamonds[3].color = glm::vec3(0.9f, 0.7f, 0.9f);
     background->diamonds[3].scoreDamage = 3;

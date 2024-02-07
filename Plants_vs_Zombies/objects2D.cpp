@@ -125,8 +125,6 @@ Mesh* objects2D::CreateDiamond(
     10, 11, 3,
     };
 
-    //std::vector<unsigned int> indices = { 0, 1, 2, 3, 4, 5};
-
 
     if (!fill) {
         diamond->SetDrawMode(GL_LINE_LOOP);

@@ -6,11 +6,11 @@
 
 namespace m1
 {
-    class Tema1 : public Scene
+    class Player : public Scene
     {
      public:
-        Tema1();
-        ~Tema1();
+        Player();
+        ~Player();
 
         void Init() override;
 
